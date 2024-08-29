@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulario para identificar tipologías de reuniones</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    fieldset {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+    legend {
+        font-weight: bold;
+    }
+    #result {
+        margin-top: 20px;
+    }
+    #message {
+        color: red;
+        font-weight: bold;
+        margin-top: 20px; /* Espacio adicional antes del mensaje */
+        padding: 10px;
+        border: 1px solid red;
+        border-radius: 5px;
+        display: none; /* Ocultar el mensaje por defecto */
+    }
+    .button-container {
+        margin-top: 10px;
+    }
+    .button-container button {
+        margin-right: 10px; /* Espacio entre los botones */
+    }
+</style>
+</head>
+<body>
+<h1>Formulario para identificar tipologías de reuniones</h1>
+<form id="meeting-form">
+    <fieldset>
+        <legend>1. ¿Cuál es el propósito principal de la reunión? (Selecciona todas las opciones que apliquen)</legend>
+        <label><input type="checkbox" name="purpose" value="Planificación y Estrategia"> Definir objetivos a largo plazo y estrategias.</label><br>
+        <label><input type="checkbox" name="purpose" value="Coordinación y Seguimiento"> Coordinar tareas y hacer seguimiento de proyectos.</label><br>
+        <label><input type="checkbox" name="purpose" value="Resolución de Problemas y Operativas"> Resolver problemas inmediatos y gestionar operaciones diarias.</label><br>
+        <label><input type="checkbox" name="purpose" value="Colaboración y Creatividad"> Fomentar la colaboración y generar nuevas ideas.</label>
+    </fieldset>
+    <br>
+    <fieldset>
+        <legend>2. ¿Cuál es el resultado esperado de la reunión? (Selecciona todas las opciones que apliquen)</legend>
+        <label><input type="checkbox" name="outcome" value="Planificación y Estrategia"> Un plan estratégico o conjunto de objetivos.</label><br>
+        <label><input type="checkbox" name="outcome" value="Coordinación y Seguimiento"> Un informe de progreso y próximas acciones a tomar.</label><br>
+        <label><input type="checkbox" name="outcome" value="Resolución de Problemas y Operativas"> Soluciones a problemas operativos actuales.</label><br>
+        <label><input type="checkbox" name="outcome" value="Colaboración y Creatividad"> Nuevas ideas y enfoques innovadores.</label>
+    </fieldset>
+    <br>
+    <fieldset>
+        <legend>3. ¿Qué tipo de participantes deben asistir a la reunión? (Selecciona todas las opciones que apliquen)</legend>
+        <label><input type="checkbox" name="participants" value="Planificación y Estrategia"> Directivos y responsables de la planificación estratégica.</label><br>
+        <label><input type="checkbox" name="participants" value="Coordinación y Seguimiento"> Miembros del equipo de proyecto y coordinadores.</label><br>
+        <label><input type="checkbox" name="participants" value="Resolución de Problemas y Operativas"> Personal de operaciones y resolución de problemas.</label><br>
+        <label><input type="checkbox" name="participants" value="Colaboración y Creatividad"> Colaboradores internos y externos con creatividad e innovación.</label>
+    </fieldset>
+    <br>
+    <fieldset>
+        <legend>4. ¿Qué actividades se realizarán durante la reunión? (Selecciona todas las opciones que apliquen)</legend>
+        <label><input type="checkbox" name="activities" value="Planificación y Estrategia"> Análisis de datos, formulación de estrategias y toma de decisiones.</label><br>
+        <label><input type="checkbox" name="activities" value="Coordinación y Seguimiento"> Revisión de tareas, asignación de nuevas tareas y seguimiento.</label><br>
+        <label><input type="checkbox" name="activities" value="Resolución de Problemas y Operativas"> Identificación de problemas y desarrollo de soluciones inmediatas.</label><br>
+        <label><input type="checkbox" name="activities" value="Colaboración y Creatividad"> Sesiones de brainstorming y creación de alianzas estratégicas.</label>
+    </fieldset>
+    <br>
+    <fieldset>
+        <legend>6. ¿Con qué frecuencia se deben realizar estas reuniones? (Selecciona todas las opciones que apliquen)</legend>
+        <label><input type="checkbox" name="frequency" value="Alta"> Diaria.</label><br>
+        <label><input type="checkbox" name="frequency" value="Alta"> Semanal.</label><br>
+        <label><input type="checkbox" name="frequency" value="Media"> Quincenal.</label><br>
+        <label><input type="checkbox" name="frequency" value="Media"> Mensual.</label><br>
+        <label><input type="checkbox" name="frequency" value="Baja"> Trimestral.</label><br>
+        <label><input type="checkbox" name="frequency" value="Baja"> Anual.</label><br>
+        <label><input type="checkbox" name="frequency" value="Variable"> Según sea necesario.</label>
+    </fieldset>
+    <br>
+    <input type="submit" value="Enviar">
+</form>
+<div id="result"></div>
+<div id="message"></div>
+<script>
+    document.getElementById('meeting-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const form = event.target;
+        const data = new FormData(form);
+        const purposes = data.getAll('purpose');
+        const outcomes = data.getAll('outcome');
+        const participants = data.getAll('participants');
+        const activities = data.getAll('activities');
+        const frequencies = data.getAll('frequency');
+
+        let results = {
+            'Planificación y Estrategia': 0,
+            'Coordinación y Seguimiento': 0,
+            'Resolución de Problemas y Operativas': 0,
+            'Colaboración y Creatividad': 0
+        };
+
+        purposes.forEach(value => results[value]++);
+        outcomes.forEach(value => results[value]++);
+        participants.forEach(value => results[value]++);
+        activities.forEach(value => results[value]++);
+
+        let maxType = '';
+        let maxValue = 0;
+
+        for (const [type, value] of Object.entries(results)) {
+            if (value > maxValue) {
+                maxType = type;
+                maxValue = value;
+            }
+        }
+
+        // Mostrar el resultado y el formulario de confirmación
+        document.getElementById('result').innerHTML = `El tipo de reunión sugerido es: ${maxType}<br><br>` +
+        `<form id="confirmation-form">` +
+        `<fieldset>` +
+        `<legend>¿El resultado obtenido se alinea con los objetivos que tenías en mente para esta reunión?</legend><br>` +
+        `<div class="button-container">` +
+        `<label><button type="button" onclick="handleResponse('yes')">Sí</button></label>` +
+        `<label><button type="button" onclick="handleResponse('no')">No</button></label>` +
+        `</div>` +
+        `</fieldset>` +
+        `</form>`;
+
+        // Ocultar el mensaje en caso de nuevo envío
+        document.getElementById('message').style.display = 'none';
+    });
+
+    function handleResponse(response) {
+        if (response === 'no') {
+            document.getElementById('message').innerHTML = 
+            'Te invitamos a completar de nuevo el formulario para asegurar que el resultado se ajuste mejor a tus necesidades y expectativas.';
+            document.getElementById('message').style.display = 'block'; // Mostrar el mensaje
+            document.getElementById('meeting-form').reset(); // Resetear el formulario
+            document.getElementById('result').innerHTML = ''; // Limpiar el resultado
+        } else {
+            window.location.href = 'https://www.eroski.es/?tk=0'; // Redirigir al enlace
+        }
+    }
+</script>
+</body>
+</html>
